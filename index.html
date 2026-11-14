@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earth Jukebox | Listen to Earth</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Điều hướng -->
+    <header class="navbar">
+        <div class="logo">
+            EARTH<span> TEMPERATURE</span>
+        </div>
+        <nav>
+        <a href="#home">Home</a>
+        <a href="#data">Earth Data</a>
+        <a href="#visualization">Visualization</a>
+        <a href="#sound">Sound</a>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="hero-content">       
+            <p class="subtitle">A NEW WAY TO EXPERIENCE OUR PLANET</p>
+
+            <h1>
+                LISTEN TO<br>
+                OUR <span>EARTH.</span>
+            </h1>
+
+            <p class="description">
+                Discover our planet through NASA's scientific data,
+                transformed into an extraordinary auditory experience.
+            </p>
+
+            <a href="file:///C:/Users/HAI%20NAM/Downloads/earth_information_jukebox.html" class="explore-button">
+            Goes to Jukebox->
+            </a>
+        </div>
+
+        <div class="earth-visual">
+            <div class="earth-circle"></div>
+        </div>
+
+    </section>
+
+    <!--  dữ liệu -->
+    <section class="data-section" id="data">
+
+        <div class="section-heading">
+            <p class="subtitle">NASA POWER DATABASE</p>
+            <h2>EARTH DATA OVERVIEW</h2>
+        </div>
+
+        <div class="data-grid">
+
+            <div class="data-card">
+                <p>LOCATION</p>
+                <h3 id="locationValue">Waiting for data😭...</h3>
+            </div>
+
+            <div class="data-card">
+            <p>TIME RANGE</p>
+            <h3 id="timeRangeValue">Waiting for data😭...</h3>
+            </div>
+            
+            <div class="data-card">
+                <p>DATA TYPE</p>
+                <h3>Temperature</h3>
+            </div>
+
+            <div class="data-card">
+                <p>DATA SOURCE</p>
+                <h3>NASA POWER</h3>
+            </div>
+
+        </div>
+
+    </section>
+    <!-- Hiệu ứng -->
+    <section class="visual-section" id="visualization">
+
+        
+            <p class="subtitle">UNDERSTANDING OUR PLANET</p>
+            <div class="section-heading">
+            <h2>DATA VISUALIZATION</h2><br><br><br>
+            </div>
+        <div class="pickdel">
+            <button id="xoahetdulieu" class="clear-btn">
+            CLEAR DATA
+            </button>
+            <input type="file" id="jsonFile" accept=".json">
+            <p id="fileStatus"></p>
+        </div>
+        
+        <br><br><div class="chart-placeholder">
+            <p>01 / TEMPERATURE ANALYSIS</p>
+            <h3>Temperature Over Time</h3>
+            <span>Our NASA temperature chart will appear here.</span>
+        </div>
+    </section>
+
+
+    <!-- Âm thanh  -->
+    <section class="sound-section" id="sound">
+        <div class="messi">
+        <p class="subtitle">BEYOND WHAT WE SEE</p>
+        <h2>LISTEN TO THE DATA.</h2>
+        </div>
+        <p>
+            What if scientific data could become music?
+            Explore the hidden sounds of our planet.
+        </p>
+
+        <div class="audio-placeholder">
+            <span>♫</span>
+            <p>SONIFICATION PLAYER — COMING SOON</p>
+            <button id="playBtn">Play</button>
+            <button id="pauseBtn">Pause</button>
+            <button id="stopBtn">Stop</button>
+        </div>
+        <div class="skibidi">
+        <a href="https://power.larc.nasa.gov/data-access-viewer/" class="my-button">
+        GO TO NASA DATAS LINK
+        </a>
+        </div>
+    </section>
+    <!-- In4 -->
+    <footer>
+        <p>EARTH JUKEBOX © 2026</p>
+        <p>DATA SOURCE: Me alone by tripping everywhere</p>
+        
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
