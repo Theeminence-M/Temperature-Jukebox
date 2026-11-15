@@ -11,21 +11,7 @@ let isPaused = false;
 let playbackTimer = null;
 
 
-// 3. CREATE THE WEBSITE INTERFACE
-
 const chartContainer = document.querySelector(".chart-placeholder");
-
-chartContainer.innerHTML = `
-    <p>01 / TEMPERATURE ANALYSIS</p>
-    <h3>Temperature Over Time</h3>
-
-    <p id="data-status">Loading NASA data...</p>
-
-    <div style="width:100%; height:300px; position:relative;">
-        <canvas id="temperatureChart"></canvas>
-    </div>
-`;
-
 const audioContainer = document.querySelector(".audio-placeholder");
 
 audioContainer.innerHTML = `
@@ -209,93 +195,6 @@ function initializeAudio() {
     }
 
 }
-function playTemperatureSound(temperature) {
-
-    const frequency = temperatureToFrequency(temperature);
-
-    currentOscillator = audioContext.createOscillator();
-    currentGain = audioContext.createGain();
-
-    currentOscillator.frequency.value = frequency;
-
-    currentGain.gain.value = 0.2;
-
-    currentOscillator.connect(currentGain);
-    currentGain.connect(audioContext.destination);
-
-    currentOscillator.start();
-
-    currentOscillator.stop(audioContext.currentTime + 1);
-}
-
-// 8. CONVERT TEMPERATURE INTO SOUND FREQUENCY
-
-function temperatureToFrequency(temperature) {
-
-    const minTemperature = 10;
-    const maxTemperature = 35;
-
-    const minFrequency = 220;
-    const maxFrequency = 880;
-
-    const normalized =
-        (temperature - minTemperature) /
-        (maxTemperature - minTemperature);
-
-    const frequency =
-        minFrequency +
-        normalized * (maxFrequency - minFrequency);
-
-    return Math.max(
-        minFrequency,
-        Math.min(maxFrequency, frequency)
-    );
-
-}
-
-
-// 9. PLAY ONE TEMPERATURE SOUND
-
-function playTemperatureSound(temperature) {
-
-    initializeAudio();
-
-    const frequency = temperatureToFrequency(temperature);
-
-    const oscillator = audioContext.createOscillator();
-
-    const gain = audioContext.createGain();
-
-    oscillator.type = "sine";
-
-    oscillator.frequency.value = frequency;
-
-    gain.gain.value =
-        Number(document.getElementById("volumeControl").value);
-
-    oscillator.connect(gain);
-
-    gain.connect(audioContext.destination);
-
-    oscillator.start();
-
-    gain.gain.setTargetAtTime(
-        0,
-        audioContext.currentTime + 0.65,
-        0.1
-    );
-
-    oscillator.stop(audioContext.currentTime + 1);
-
-    currentOscillator = oscillator;
-
-    currentGain = gain;
-
-}
-
-
-// 10. PLAY THE DATA SEQUENCE
-
 function playNextSound() {
 
     if (!isPlaying) {
@@ -322,7 +221,7 @@ function playNextSound() {
 
     currentIndex++;
 
-    playbackTimer = setTimeout(playNextSound, 1100);
+    playbackTimer = setTimeout(playNextSound, 2100);
 
 }
 
@@ -438,61 +337,73 @@ document.getElementById("volumeControl").addEventListener("input", (event) => {
 
 async function initializeWebsite() {
     try {
-        await loadChartLibrary();
+    await loadChartLibrary();
 
-        const fileInput = document.getElementById("jsonFile");
-        const fileStatus = document.getElementById("fileStatus");
-        const dataStatus = document.getElementById("data-status");
+    const fileInput = document.getElementById("jsonFile");
+    const fileStatus = document.getElementById("fileStatus");
+    const dataStatus = document.getElementById("data-status");
+    if (!fileInput || !fileStatus) {
+        throw new Error("Cannot find JSON file input or status element.");
+    }
 
-        if (!fileInput || !fileStatus) {
-            throw new Error("Cannot find JSON file input or status element.");
-        }
-
-        fileInput.addEventListener("change", async function() {
-            const file = fileInput.files[0];
-
-            if (!file) return;
-
-            fileStatus.textContent = "Loading data...";
-            dataStatus.textContent = "Reading NASA data...";
-
-            try {
+    fileInput.addEventListener("change", async function() {
+        const file = fileInput.files[0];
+        if (!file) return;
+        fileStatus.textContent = "Loading data...";
+        dataStatus.textContent = "Reading NASA data...";
+        try {
                 // 1. Read JSON file
-                const text = await file.text();
-                const data = JSON.parse(text);
+            const text = await file.text();
+            const data = JSON.parse(text);
+            const parameters = data.properties?.parameter;
 
-                // 2. Find T2M temperature data
-                const parameters = data.properties?.parameter;
+            if (!parameters?.T2M) {
+                throw new Error("T2M temperature data not found.");
+            }
 
-                if (!parameters?.T2M) {
-                    throw new Error("T2M temperature data not found.");
-                }
-
-                const monthlyData = parameters.T2M;
+            const monthlyData = parameters.T2M;
 
                 // 3. Convert JSON into JavaScript array
-                temperatureData = Object.entries(monthlyData)
-                    .filter(([date, value]) => {
-                        const month = Number(date.slice(4, 6));
+            temperatureData = Object.entries(monthlyData)
+                .filter(([date, value]) => {
+                    const month = Number(date.slice(4, 6));
 
-                        return (
-                            /^\d{6}$/.test(date) &&
-                            month >= 1 &&
-                            month <= 12 &&
-                            Number.isFinite(Number(value)) &&
-                            Number(value) !== -999
-                        );
+                    return (
+                        /^\d{6}$/.test(date) &&
+                        month >= 1 &&
+                        month <= 12 &&
+                        Number.isFinite(Number(value)) &&
+                        Number(value) !== -999
+                    );
                     })
                     .sort(([a], [b]) => a.localeCompare(b))
                     .map(([date, value]) => ({
                         date: date.slice(0, 4) + "-" + date.slice(4, 6),
                         temperature: Number(value)
                     }));
-
                 if (temperatureData.length === 0) {
                     throw new Error("No valid monthly data found.");
                 }
+                const temperatures = temperatureData.map(
+                    item => item.temperature
+                );
 
+                const minTemp = Math.min(...temperatures);
+                const maxTemp = Math.max(...temperatures);
+
+                console.log("Temperature values:", temperatures);
+                console.log("Temperature count:", temperatures.length);
+                console.log("Minimum temperature:", minTemp);
+                console.log("Maximum temperature:", maxTemp);
+
+                console.log(
+                    "Frequency test:",
+                    temperatureData.map(item => ({
+                        date: item.date,
+                        temperature: item.temperature,
+                        frequency: temperatureToFrequency(item.temperature)
+                    }))
+                );
                 // 4. Update LOCATION
                     const header =
                         data.properties?.header || data.header || {};
@@ -550,8 +461,7 @@ async function initializeWebsite() {
                 createTemperatureChart();
 
                 // 7. Update status
-                fileStatus.textContent =
-                    `Successfully loaded ${temperatureData.length} records!`;
+                fileStatus.textContent = "";
 
                 dataStatus.textContent =
                     `Loaded ${temperatureData.length} monthly records.`;
@@ -567,6 +477,7 @@ async function initializeWebsite() {
                 document.getElementById("audio-status").textContent =
                 "READY TO EXPLORE EARTH DATA";
                 console.log("Loaded NASA data:", temperatureData);
+                console.log("First NASA record:", temperatureData[0]);
             } catch (error) {
                 console.error("JSON loading error:", error);
 
@@ -584,9 +495,13 @@ async function initializeWebsite() {
 
 initializeWebsite();
 document.getElementById("xoahetdulieu").addEventListener("click", () => {
+
+    clearData();
+
     document.getElementById("visualization").scrollIntoView({
         behavior: "smooth"
     });
+
 });
 function clearData() {
     stopSound();
@@ -621,34 +536,50 @@ document.getElementById("xoahetdulieu").addEventListener("click", () => {
 });
 function temperatureToFrequency(temperature) {
 
-    const minTemp = 10;
-    const maxTemp = 30;
-
     const minFrequency = 220;
     const maxFrequency = 660;
+    const temperatures = temperatureData
+        .map(item => item.temperature)
+        .filter(value => Number.isFinite(value));
 
-    const frequency = Math.max(220, Math.min(660,
+    if (temperatures.length === 0) {
+        return 440;
+    }
+    const minTemp = Math.min(...temperatures);
+    const maxTemp = Math.max(...temperatures);
+    if (maxTemp === minTemp) {
+        return (minFrequency + maxFrequency) / 2;
+    }
+    const normalized =
+        (temperature - minTemp) / (maxTemp - minTemp);
+    const frequency =
         minFrequency +
-        ((temperature - minTemp) / (maxTemp - minTemp)) *
-        (maxFrequency - minFrequency)
-    ));
-
-    return frequency;
+        normalized * (maxFrequency - minFrequency);
+    return Math.max(
+        minFrequency,
+        Math.min(maxFrequency, frequency)
+    );
 }
 
 function playTemperatureSound(temperature) {
     initializeAudio();
+
     const frequency = temperatureToFrequency(temperature);
+
     currentOscillator = audioContext.createOscillator();
     const filter = audioContext.createBiquadFilter();
     currentGain = audioContext.createGain();
+    const volumeControl = document.getElementById("volumeControl");
+    const volume = Number(volumeControl.value);
+
     currentOscillator.type = "triangle";
     currentOscillator.frequency.value = frequency;
+
     filter.type = "lowpass";
     filter.frequency.value = 1200;
     const now = audioContext.currentTime;
     currentGain.gain.setValueAtTime(0.0001, now);
-    currentGain.gain.linearRampToValueAtTime(0.2, now + 0.3);
+    currentGain.gain.linearRampToValueAtTime(volume, now + 0.3);
     currentGain.gain.linearRampToValueAtTime(0.0001, now + 2);
     currentOscillator.connect(filter);
     filter.connect(currentGain);

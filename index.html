@@ -8,8 +8,6 @@
 </head>
 
 <body>
-
-    <!-- Điều hướng -->
     <header class="navbar">
         <div class="logo">
             EARTH<span> TEMPERATURE</span>
@@ -46,8 +44,6 @@
         </div>
 
     </section>
-
-    <!--  dữ liệu -->
     <section class="data-section" id="data">
 
         <div class="section-heading">
@@ -80,7 +76,6 @@
         </div>
 
     </section>
-    <!-- Hiệu ứng -->
     <section class="visual-section" id="visualization">
 
         
@@ -99,12 +94,13 @@
         <br><br><div class="chart-placeholder">
             <p>01 / TEMPERATURE ANALYSIS</p>
             <h3>Temperature Over Time</h3>
-            <span>Our NASA temperature chart will appear here.</span>
+         <p id="data-status"></p>
+
+            <div style="width:100%; height:300px; position:relative;">
+                <canvas id="temperatureChart"></canvas>
+            </div>
         </div>
     </section>
-
-
-    <!-- Âm thanh  -->
     <section class="sound-section" id="sound">
         <div class="messi">
         <p class="subtitle">BEYOND WHAT WE SEE</p>
@@ -117,10 +113,7 @@
 
         <div class="audio-placeholder">
             <span>♫</span>
-            <p>SONIFICATION PLAYER — COMING SOON</p>
-            <button id="playBtn">Play</button>
-            <button id="pauseBtn">Pause</button>
-            <button id="stopBtn">Stop</button>
+            <p>SONIFICATION PLAYER</p>
         </div>
         <div class="skibidi">
         <a href="https://power.larc.nasa.gov/data-access-viewer/" class="my-button">
@@ -131,7 +124,7 @@
     <!-- In4 -->
     <footer>
         <p>EARTH JUKEBOX © 2026</p>
-        <p>DATA SOURCE: Me alone by tripping everywhere</p>
+        <p>DATA SOURCE: NASA POWER</p>
         
     </footer>
 
