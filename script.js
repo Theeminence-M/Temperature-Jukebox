@@ -459,7 +459,8 @@ async function initializeWebsite() {
 
                 // 6. Create chart
                 createTemperatureChart();
-
+                document.getElementById("chart-title").style.display = "none";
+                document.getElementById("chart-description").style.display = "none";
                 // 7. Update status
                 fileStatus.textContent = "";
 
@@ -505,6 +506,8 @@ document.getElementById("xoahetdulieu").addEventListener("click", () => {
 });
 function clearData() {
     stopSound();
+    document.getElementById("chart-title").style.display = "block";
+    document.getElementById("chart-description").style.display = "inline";
     temperatureData.length = 0;
     document.getElementById("jsonFile").value = "";
     document.getElementById("locationValue").textContent =
